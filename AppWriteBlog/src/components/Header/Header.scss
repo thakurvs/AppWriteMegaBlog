@@ -1,0 +1,31 @@
+.user-profile {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    background-color: #f4f6f9;  /* Light background for the profile */
+    padding: 8px 8px;  /* Space around the content */
+    border-radius: 15px;  /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Subtle shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+    width: fit-content;  /* Content width */
+    cursor: pointer;  /* Pointer cursor on hover */
+  }
+  
+  .user-profile:hover {
+    transform: scale(1.05);  /* Slightly increase size on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);  /* Enhance shadow on hover */
+  }
+  
+  .user-icon {
+    font-size: 20px;  /* Icon size */
+    color: #3b5998;  /* Facebook blue color (can be customized) */
+    margin-right: 12px;  /* Space between icon and name */
+  }
+  
+  .user-name {
+    font-size: 18px;  /* Font size for the username */
+    font-weight: 500;  /* Slightly bold username */
+    color: #333;  /* Dark text for good contrast */
+  }
+  
+  
