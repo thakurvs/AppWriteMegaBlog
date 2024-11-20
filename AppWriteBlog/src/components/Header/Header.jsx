@@ -15,7 +15,7 @@ function Header() {
 
   const authStatus = useSelector((state) => state.auth.status);
   const userData = useSelector((state) => state.auth.userData);
-  console.log(authStatus, userData);
+  // console.log(authStatus, userData);
 
   const dispatch = useDispatch();
   const [searchTermLocal, setSearchTermLocal] = useState("");
@@ -89,7 +89,8 @@ function Header() {
                   {/* Font Awesome User Icon */}
                   <FontAwesomeIcon icon={faUser} className="user-icon" />
                   {/* User Name */}
-                  <span className="user-name">{userData?.name}</span>
+                  {/* Defensive check to prevent undefined errors */}
+                  <span className="user-name">{userData?.name || 'User'}</span>
                 </div>
               )}
               {!authStatus && (

@@ -6,33 +6,66 @@ import NoPostsAvailable from '../components/NoPostsAvailable';
 
 function AllPosts() {
 
-    const userData = useSelector(state => state.auth.userData);
     const searchTerm = useSelector(state => state.search.searchTerm)  // Get search term from Redux
     const [posts, setPosts] = useState([])
     const [filteredPosts, setFilteredPosts] = useState([]);
     const [loading, setLoading] = useState(true);  // Add loading state
 
+    const userData = useSelector((state) => state.auth.userData);
+    const status = useSelector((state) => state.auth.status);
+    console.log(`userdata is ${userData.name}`);
+    console.log(`userid is ${userData.$id}`);
+    console.log(`name is ${userData.name}`);
+    console.log(`status is ${status}`);
+
+    // useEffect(() => {
+    //     if (userData?.userData && userData.userData.$id && status) { 
+    //       const userid = userData.userData.$id; 
+    //       console.log(`userid is ${userid}`);
+    //       appwriteService
+    //         .getPosts(userid)
+    //         .then((posts) => {
+    //           if (posts?.documents) {
+    //             setPosts(posts.documents);
+    //             setFilteredPosts(posts.documents);
+    //           }
+    //           setLoading(false); 
+    //         })
+    //         .catch((error) => {
+    //           console.error("Error fetching posts:", error);
+    //           setLoading(false);
+    //         });
+    //     } else {
+    //       setLoading(false); 
+    //     }
+    // }, [userData, status]);
+
     useEffect(() => {
-        if (userData && userData.$id) {  // Check if userData is available
-            const userid = userData.$id; // Replace with dynamic userId if
-            appwriteService.getPosts(userid)
-            .then((posts) => {
-                // console.log(`posts are ${posts}`)
-                if(posts && posts.documents){
-                    // console.log(posts.documents);
-                    setPosts(posts.documents);
-                    setFilteredPosts(posts.documents);
-                } 
-                setLoading(false);  // Stop loading once posts are fetched
-            })
-            .catch((error) => {
-                console.error('Error fetching posts:', error);
-                setLoading(false);
-            })
+        const fetchPosts = async () => {
+          try {
+            if (status && userData && userData?.$id) {
+              const userId = userData.$id; // Fetch userId safely
+              console.log(`Fetching posts for userId: ${userId}`);
+              const response = await appwriteService.getPosts(userId);
+    
+              if (response?.documents) {
+                setPosts(response.documents);
+                setFilteredPosts(response.documents);
+              }
+            }
+          } catch (error) {
+            console.error('Error fetching posts:', error);
+          } finally {
+            setLoading(false);
+          }
+        };
+    
+        if (status && userData) {
+          fetchPosts();
         } else {
-            setLoading(false); // Stop loading if no userData
+          setLoading(false); // Stop loading if user data is not available
         }
-    }, [userData]); // Depend on userData so it runs when userData changes
+      }, [status, userData]); // Dependency array includes `authStatus` and `userData`
 
     // Filter posts based on search term
     useEffect(() => {
@@ -56,6 +89,22 @@ function AllPosts() {
                         <div className="p-2 w-full">
                             <h1 className="text-2xl font-bold hover:text-gray-500">
                                 Loading...
+                            </h1>
+                        </div>
+                    </div>
+                </Container>
+            </div>
+        );
+    }
+
+    if (!status || !userData) {
+        return (
+            <div className="w-full flex justify-center items-center text-center min-h-screen">
+                <Container>
+                    <div className="flex flex-wrap">
+                        <div className="p-2 w-full">
+                            <h1 className="text-2xl font-bold hover:text-gray-500">
+                                Fetching Posts...
                             </h1>
                         </div>
                     </div>

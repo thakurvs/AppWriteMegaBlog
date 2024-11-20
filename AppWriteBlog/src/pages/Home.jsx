@@ -11,8 +11,18 @@ import Food from '../assets/Food.jpg'
 import SoutEastAsia from '../assets/SoutEastAsia.jpg'
 import MachuPicchu from '../assets/Machu Picchu.jpg'
 import Tokyo from '../assets/Tokyo.jpg'
+import { Suspense } from 'react';
+import { Skeleton } from "@/components/ui/skeleton"
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
+
+    const navigate = useNavigate();
+    const handleNavigate = () => {
+        navigate('/all-posts');
+    }
 
     return (
         <div>
@@ -29,7 +39,7 @@ function Home() {
                     <p className="text-xl mb-8">
                     Explore the best travel tips, adventures, nature, food, and sports stories from around the globe.
                     </p>
-                    <Button variant="default" size="lg" className="text-lg">
+                    <Button variant="default" size="lg" className="text-lg" onClick={handleNavigate}>
                     Explore Blogs
                     </Button>
                 </div>
@@ -180,17 +190,22 @@ function CategoryCard({ title, description, icon, image }) {
     return (
       <Card className="overflow-hidden">
         <CardHeader className="p-0">
-          <img
-            alt={title}
-            className="object-cover w-full h-60"
-            height={400}
-            src={image}
-            style={{
-              aspectRatio: "600/400",
-              objectFit: "cover",
-            }}
-            width={600}
-          />
+          {/* <Suspense fallback={<Skeleton className="h-60 w-full" />}> */}
+            <LazyLoadImage      //uisng LazyLoadImage comp instead img foe the image optimization
+              alt={title}
+              effect="blur"
+              className="object-cover w-full"
+              height={400}
+              src={image}
+              // srcSet={`${imageSmall} 600w, ${imageMedium} 1200w, ${imageLarge} 1800w`}
+              // sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              style={{
+                aspectRatio: "600/400",
+                objectFit: "cover",
+              }}
+              width={600}
+            />
+          {/* </Suspense> */}
         </CardHeader>
         <CardContent className="p-4 dark:bg-gray-800 text-black dark:text-white  dark:border-gray-700">
           <CardTitle className="flex items-center gap-2 text-2xl font-bold">
@@ -207,9 +222,10 @@ function CategoryCard({ title, description, icon, image }) {
     return (
       <Card className="overflow-hidden">
         <CardHeader className="p-0">
-          <img
+          <LazyLoadImage
             alt={title}
-            className="object-cover w-full h-48"
+            effect="blur"
+            className="object-cover w-full"
             height={400}
             src={image}
             style={{

@@ -6,13 +6,15 @@ import { login, logout } from './store/authSlice';
 import { Header, Footer } from './components'
 import { Outlet } from 'react-router-dom'
 import { ThemeProvider } from './context/theme';
-import {Atom} from 'react-loading-indicators'
 import './App.css'
+import Loader from './components/Loader';
 
 function App() {
   // console.log(import.meta.env.VITE_APPWRITE_URL)
 
   const [themeMode, setThemeMode] = useState('light');
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
   const darkTheme = () => {
     console.log("darkTheme");
@@ -27,28 +29,23 @@ function App() {
   useEffect(() => {
     document.querySelector('html').classList.remove("light", "dark");
     document.querySelector('html').classList.add(themeMode);
-  },[themeMode])
-
-  const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch();
+  },[themeMode]);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      authService.getCurrentUser()
-        .then((userData) => {
-          if (userData) {
-            dispatch(login({ userData }));
-          } else {
-            dispatch(logout());
-          }
-        })
-        .finally(() => {
-          setLoading(false); // Set loading to false after the operation
-        });
-    }, 3000); // 5 seconds delay
-  
-    return () => clearTimeout(timeout); // Clean up timeout when the component unmounts
-  }, [])
+    authService.getCurrentUser()
+      .then((userData) => {
+        if (userData) {
+          // dispatch(login({ userData }));
+          dispatch(login(userData));
+          console.log("App userData:", userData);
+        } else {
+          dispatch(logout());
+        }
+      })
+      .finally(() => {
+        setLoading(false); // Set loading to false after the operation
+      });
+  }, [dispatch]);
 
   return !loading ? (
     <ThemeProvider value={{themeMode, darkTheme, lightTheme}}>
@@ -64,40 +61,7 @@ function App() {
         </div>
       <Footer />
     </ThemeProvider>
-   ) : <div className="w-full flex justify-center items-center min-h-screen bg-gray-100 text-brand dark:text-brand-dark ">
-        <div className="loader-container text-brand dark:text-brand-dark ">
-            <style>{`
-              .loader-container {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background: rgb(0, 0, 0);
-                z-index: 50;
-              }
-              @keyframes spin {
-                0% {
-                  transform: rotate(0deg);
-                }
-                100% {
-                  transform: rotate(360deg);
-                }
-              }
-            `}</style>
-            <Atom
-              size='large'
-              text='React Loading...'
-              textColor='rgb(52 197 229)'
-              color="rgb(16 184 221)"   // Adjust this to match your desired color
-              visible={true}
-              strokeWidth={2}
-            />
-        </div>
-      </div>
+   ) : <Loader />
    
 }
 
