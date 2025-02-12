@@ -7,6 +7,7 @@ const initialState  = {
     error : null,
 }
 
+//define action types here or different atages of AJAX call
 const dataSlice = createSlice({
     name : 'data',
     initialState : initialState,
@@ -26,10 +27,10 @@ const dataSlice = createSlice({
     }
 });
 
-// Export actions
+// Export actions/action types
 export const { fetchDataStart, fetchDataSuccess, fetchDataError } = dataSlice.actions
 
-// Thunk action to fetch data
+// Thunk action creator to fetch userdata
 export const fetchData = () => async (dispatch) => { 
     dispatch(fetchDataStart());
     try { 
